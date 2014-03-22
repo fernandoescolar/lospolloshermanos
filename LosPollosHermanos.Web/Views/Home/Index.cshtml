@@ -2,17 +2,67 @@
     ViewBag.Title = "Los Pollos Hermanos";
 }
 
+@section scripts
+{
+    <script src="~/Scripts/knockout-3.1.0.js"></script>
+    <script src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script src="~/Scripts/shopping-cart.js"></script>
+}
 <div class="row">
     <div class="col-md-3">
         <div>
-            <img src="@Url.Content("~/images/Los_Pollos.png")"  alt="Los Pollos Hermanos"/>
+            <img src="~/images/Los_Pollos.png" alt="Los Pollos Hermanos" width="200px" />
         </div>
 
         <hr />
-        <div class="col-md-9">
-            <div class="row">
-
-            </div>
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+            <h1>Welcome to Los Pollos Hermanos</h1>
+            <p>The finest ingredients are brought together with love and care, then slow cooked to perfection. Yes, the old ways are still best at Los Pollos Hermanos. But don't take my word for it. One taste, and you'll know.</p>
+        </div>
+        <hr />
+        <div class="row">
+            <img src="~/images/Los_Pollos_Hermanos.png" alt="Los Pollos Hermanos" />
+        </div>
+        <hr />
+        <div class="row cart">
+            <h1>Make your order now:</h1>
+            <table width='100%'>
+                <thead>
+                    <tr>
+                        <th width='45%'>Product</th>
+                        <th class='price' width='15%'>Price</th>
+                        <th class='quantity' width='10%'>Quantity</th>
+                        <th class='price' width='20%'>Subtotal</th>
+                        <th width='10%'> </th>
+                    </tr>
+                </thead>
+                <tbody data-bind='foreach: lines'>
+                    <tr>
+                        <td>
+                            <select data-bind='options: $root.products, optionsText: "Name", optionsCaption: "Select...", value: product'> </select>
+                        </td>
+                        <td class='price' data-bind='with: product'>
+                            <span data-bind='text: formatCurrency(Price)'> </span>
+                        </td>
+                        <td class='quantity'>
+                            <input data-bind='visible: product, value: quantity, valueUpdate: "afterkeydown"' />
+                        </td>
+                        <td class='price'>
+                            <span data-bind='visible: product, text: formatCurrency(subtotal())'> </span>
+                        </td>
+                        <td>
+                            <a href='#' data-bind='click: $parent.removeLine'>Remove</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class='grandTotal'>
+                Total value: <span data-bind='text: formatCurrency(grandTotal())'> </span>
+            </p>
+            <button data-bind='click: addLine'>Add product</button>
+            <button data-bind='click: save'>Submit order</button>
         </div>
     </div>
 </div>
