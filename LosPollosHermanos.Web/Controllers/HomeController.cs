@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
+using LosPollosHermanos.Infrastructure;
+using LosPollosHermanos.ServiceContracts;
 using LosPollosHermanos.Web.Models;
 
 namespace LosPollosHermanos.Web.Controllers
@@ -14,13 +18,19 @@ namespace LosPollosHermanos.Web.Controllers
         [HttpPost]
         public ActionResult Products()
         {
-            var model = new List<ProductModel>
-                        {
-                            new ProductModel{Id = 1, Name = "Pollos Strips", Price = 7.95m},
-                            new ProductModel{Id = 2, Name = "Chips", Price = 2.95m},
-                            new ProductModel{Id = 3, Name = "Crispy Pollos", Price = 8.90m},
-                            new ProductModel{Id = 4, Name = "Polos Wings", Price = 6.80m},
-                        };
+            var model = new List<ProductModel>();
+
+            using (var proxy = new Proxy<IProductsService>("ProductsService"))
+            {
+                
+                var products = proxy.Call(s => s.GetAvailableProducts());
+                model.AddRange(products.Select(p => new ProductModel
+                                               {
+                                                   Id = p.Id,
+                                                   Name = p.Name,
+                                                   Price = p.Price
+                                               }));
+            }
 
             return Json(model);
         }
@@ -28,7 +38,21 @@ namespace LosPollosHermanos.Web.Controllers
         [HttpPost]
         public ActionResult AddOrder(OrderLineModel[] lines)
         {
-            
+            var dto = new OrderRequest
+                      {
+                          Client = Guid.NewGuid(),
+                          Lines = lines.Select(o => new OrderRequestLine
+                                                    {
+                                                        ProductId = o.ProductId,
+                                                        Quantity = o.Quantity
+                                                    }).ToArray()
+                      };
+
+            using (var proxy = new Proxy<IOrdersService>("OrdersService"))
+            {
+                proxy.Call(s => s.SendOrder(dto));
+               
+            }
 
             return Json(true);
         }
