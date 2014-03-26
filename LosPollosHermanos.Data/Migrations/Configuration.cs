@@ -7,8 +7,7 @@ namespace LosPollosHermanos.Data.Migrations
     {
         public Configuration()
         {
-            SetSqlGenerator("System.Data.SqlClient", new MigrationsGenerator());
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(StoreDataContext context)
