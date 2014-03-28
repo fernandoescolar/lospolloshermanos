@@ -1,7 +1,6 @@
 ﻿using FirstFloor.ModernUI.Windows;
 using LosPollosHermanos.Infrastructure;
 using LosPollosHermanos.ServiceContracts;
-using System.Linq;
 using System.Windows.Controls;
 
 namespace LosPollosHermanos.Franchise
@@ -40,8 +39,9 @@ namespace LosPollosHermanos.Franchise
 
         private void Load(int orderId)
         {
-            this.order = Orders.CurrentOrders.FirstOrDefault(o => o.OrderId == orderId);
+            this.order = Orders.GetOrder(orderId);
             this.DataContext = order;
+            stop.IsEnabled = start.IsEnabled = true;
         }
 
         private void OnStartClick(object sender, System.Windows.RoutedEventArgs e)
@@ -56,6 +56,8 @@ namespace LosPollosHermanos.Franchise
 
                 proxy.Call(s=>s.UpdateOrder(updateOrderRequest));
             }
+
+            start.IsEnabled = false;
         }
 
         private void OnDoneClick(object sender, System.Windows.RoutedEventArgs e)
@@ -70,6 +72,10 @@ namespace LosPollosHermanos.Franchise
 
                 proxy.Call(s => s.UpdateOrder(updateOrderRequest));
             }
+
+            start.IsEnabled = false;
+            stop.IsEnabled = false;
+            Orders.DeleteOrder(this.order);
         }
     }
 }
