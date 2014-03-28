@@ -51,7 +51,6 @@ namespace LosPollosHermanos.Web.Controllers
             using (var proxy = new Proxy<IOrdersService>("OrdersService"))
             {
                 proxy.Call(s => s.SendOrder(dto));
-               
             }
 
             return Json(true);

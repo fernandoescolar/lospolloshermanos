@@ -49,7 +49,7 @@ namespace LosPollosHermanos.Services
 
         public IEnumerable<OrderRequest> GetPendingOrders()
         {
-            var orders = _dbContext.Orders.Include("OrderLines").Where(x => !x.IsReceivedByStore).ToList();
+            var orders = _dbContext.Orders.Include("OderLines").Where(x => !x.IsReceivedByStore).ToList();
             var result = orders.Select(x => new OrderRequest
                                             {
                                                 Client = x.ClientId,
