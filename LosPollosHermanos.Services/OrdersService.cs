@@ -44,7 +44,12 @@ namespace LosPollosHermanos.Services
                 entry.Property(e => e.DeliveredTimeStamp).IsModified = true;
 
                 _dbContext.SaveChanges();
+
+                Console.WriteLine("Order {0} delivered!",
+                        order.Id);
             }
+
+
         }
 
         public IEnumerable<OrderRequest> GetPendingOrders()
