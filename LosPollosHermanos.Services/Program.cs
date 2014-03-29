@@ -13,13 +13,13 @@ namespace LosPollosHermanos.Services
             try
             {
                 ordersServiceHost.Open();
-                productsServiceHost.Open();
+                //productsServiceHost.Open();
 
                 Console.WriteLine("Press intro to exit");
                 Console.ReadLine();
 
                 ordersServiceHost.Close();
-                productsServiceHost.Close();
+                //productsServiceHost.Close();
             }
             catch (Exception ex)
             {

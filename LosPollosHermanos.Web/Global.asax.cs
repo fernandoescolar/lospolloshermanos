@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
-
-namespace LosPollosHermanos.Web
+﻿namespace LosPollosHermanos.Web
 {
+    using System.Web.Mvc;
+    using System.Web.Optimization;
+    using System.Web.Routing;
+    using System.ServiceModel;
+    using Infrastructure;
+
     public class MvcApplication : System.Web.HttpApplication
     {
+        ServiceHost _productsService;
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            _productsService = new ServiceHost(typeof(ProductsService));
+            _productsService.Open();
+
         }
     }
 }
