@@ -46,32 +46,14 @@ namespace LosPollosHermanos.Franchise
 
         private void OnStartClick(object sender, System.Windows.RoutedEventArgs e)
         {
-            using (var proxy = new Proxy<IOrdersService>("OrdersService"))
-            {
-                var updateOrderRequest = new UpdateOrderRequest
-                {
-                    OrderId = order.OrderId, 
-                    Status = OrderStatus.Cooking
-                };
-
-                proxy.Call(s=>s.UpdateOrder(updateOrderRequest));
-            }
+            Orders.UpdateOrder(order, true, false);
 
             start.IsEnabled = false;
         }
 
         private void OnDoneClick(object sender, System.Windows.RoutedEventArgs e)
         {
-            using (var proxy = new Proxy<IOrdersService>("OrdersService"))
-            {
-                var updateOrderRequest = new UpdateOrderRequest
-                {
-                    OrderId = order.OrderId,
-                    Status = OrderStatus.Delivered
-                };
-
-                proxy.Call(s => s.UpdateOrder(updateOrderRequest));
-            }
+            Orders.UpdateOrder(order, true, true);
 
             start.IsEnabled = false;
             stop.IsEnabled = false;

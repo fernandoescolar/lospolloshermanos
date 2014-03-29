@@ -16,14 +16,15 @@ namespace LosPollosHermanos.Franchise
     public partial class Orders : UserControl
     {
         private static Orders currentInstance;
-        private readonly Timer timer;
         private readonly List<OrderRequest> currentOrders = new List<OrderRequest>();
+        private readonly ServiceBusTopicHelper helper;
 
         public Orders()
         {
             currentInstance = this;
             InitializeComponent();
-            this.timer = new Timer(OnReloadCallback, null, new TimeSpan(0), TimeSpan.FromSeconds(10));
+            this.helper = ServiceBusTopicHelper.Setup(SubscriptionInitializer.Initialize());
+            this.LoadOrders();
         }
 
         public static void DeleteOrder(OrderRequest order)
@@ -45,18 +46,28 @@ namespace LosPollosHermanos.Franchise
             return null;
         }
 
-        private void OnReloadCallback(object state)
+        public static void UpdateOrder(OrderRequest order, bool isOrdered, bool isDelivered)
         {
-            this.LoadOrders();
-            this.LoadLinks();
+            if (currentInstance != null)
+            {
+                currentInstance.helper.Publish<OrderRequest>(order, (m) =>
+                {
+                    m.Properties["IsOrdered"] = isOrdered;
+                    m.Properties["IsDelivered"] = isDelivered;
+                });
+            }
         }
 
         private void LoadOrders()
         {
-            using (var proxy = new Proxy<IOrdersService>("OrdersService"))
-            {
-                currentOrders.AddRange(proxy.Call(s => s.GetPendingOrders()));
-            }
+            helper.Subscribe<OrderRequest>((order) =>
+                {
+                    currentOrders.Add(order);
+                    this.LoadLinks();
+                }
+                , "(IsOrdered = false) AND (IsDelivered = false)",
+                "Orders"
+            );
         }
 
         private void LoadLinks()
