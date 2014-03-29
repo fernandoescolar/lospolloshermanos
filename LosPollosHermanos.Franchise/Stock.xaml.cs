@@ -1,53 +1,59 @@
-﻿using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
 using LosPollosHermanos.Infrastructure;
 using LosPollosHermanos.ServiceContracts;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading;
-using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace LosPollosHermanos.Franchise
 {
-    /// <summary>
-    /// Interaction logic for Orders.xaml
-    /// </summary>
-    public partial class Stock : UserControl
+    public partial class Stock : UserControl, INotifyPropertyChanged
     {
         private readonly Timer timer;
 
-        internal readonly static List<AvailableProduct> AvailableProducts = new List<AvailableProduct>();
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Product[] CurrentProducts { get; set; }
 
         public Stock()
         {
+            DataContext = this;
             InitializeComponent();
             this.timer = new Timer(OnReloadCallback, null, new TimeSpan(0), TimeSpan.FromSeconds(10));
         }
 
         private void OnReloadCallback(object state)
         {
-            this.LoadAvailableProducts();
-            this.LoadLinks();
-        }
-
-        private void LoadAvailableProducts()
-        {
             using (var proxy = new Proxy<IProductsService>("ProductsService"))
             {
-                AvailableProducts.AddRange(proxy.Call(s => s.GetAvailableProducts()));
+                this.CurrentProducts = proxy.Call(s => s.GetAllProducts());
+                this.OnPropertyChanged("CurrentProducts");
             }
         }
 
-        private void LoadLinks()
+        private void OnPropertyChanged(string propertyName = null)
         {
-            this.Dispatcher.BeginInvoke(new Action(() =>
+            var handler = this.PropertyChanged;
+            if (handler != null)
             {
-                this.tab.Links.Clear();
-                AvailableProducts.Select(o => new Link { DisplayName = o.Name, Source = new Uri("Product.xaml#" + o.Id, UriKind.Relative) }).ToList().ForEach(this.tab.Links.Add);
-            }), DispatcherPriority.Normal, null);
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void OnCheckboxClick(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (CheckBox) sender;
+            var product = (Product) checkbox.DataContext;
+
+            using (var proxy = new Proxy<IProductsService>("ProductsService"))
+            {
+                proxy.Call(s => s.UpdateProductStock(new ProductAvailabilityRequest
+                                                     {
+                                                         IsAvailable = checkbox.IsChecked.HasValue && checkbox.IsChecked.Value,
+                                                         ProductId = product.Id
+                                                     }));
+            }
         }
     }
 }

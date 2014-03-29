@@ -23,8 +23,8 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <StackPanel Orientation="Horizontal">
-            <Button Content="Start" Margin="20,0,0,0" Click="OnStartClick"></Button>
-            <Button Content="Done"  Margin="20,0,0,0" Click="OnDoneClick"></Button>
+            <Button x:Name="start" Content="Start" Margin="20,0,0,0" Click="OnStartClick"></Button>
+            <Button x:Name="stop" Content="Done"  Margin="20,0,0,0" Click="OnDoneClick"></Button>
         </StackPanel>
     </StackPanel>
     
