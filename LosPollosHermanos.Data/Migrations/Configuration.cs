@@ -1,3 +1,4 @@
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using LosPollosHermanos.Domain;
 
@@ -7,7 +8,7 @@ namespace LosPollosHermanos.Data.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(StoreDataContext context)

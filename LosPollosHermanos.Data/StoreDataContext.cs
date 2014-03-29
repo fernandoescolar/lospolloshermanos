@@ -7,6 +7,7 @@ namespace LosPollosHermanos.Data
     {
         public StoreDataContext() : base("LosPollosHermanos")
         {
+            
         }
 
         public DbSet<Order> Orders { get; set; }

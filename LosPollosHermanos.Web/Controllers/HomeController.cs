@@ -4,12 +4,14 @@ using System.Linq;
 using System.Web.Mvc;
 using LosPollosHermanos.Infrastructure;
 using LosPollosHermanos.ServiceContracts;
+using LosPollosHermanos.Web.Infrastructure;
 using LosPollosHermanos.Web.Models;
 
 namespace LosPollosHermanos.Web.Controllers
 {
     public class HomeController : Controller
     {
+
         public ActionResult Index()
         {
             return View();
@@ -18,20 +20,20 @@ namespace LosPollosHermanos.Web.Controllers
         [HttpPost]
         public ActionResult Products()
         {
+
             var model = new List<ProductModel>();
 
-            using (var proxy = new Proxy<IProductsService>("ProductsService"))
-            {
-                
-                var products = proxy.Call(s => s.GetAvailableProducts());
-                model.AddRange(products.Select(p => new ProductModel
-                                               {
-                                                   Id = p.Id,
-                                                   Name = p.Name,
-                                                   Price = p.Price
-                                               }));
-            }
+            var service = new ProductsService();
 
+            var products = service.GetAvailableProducts();
+
+            model.AddRange(products.Select(p => new ProductModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price
+            }));
+           
             return Json(model);
         }
 

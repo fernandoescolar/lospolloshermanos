@@ -18,7 +18,8 @@
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             _productsService = new ServiceHost(typeof(ProductsService));
-            _productsService.Open();
+            if (_productsService.State == CommunicationState.Closed)
+                _productsService.Open();
 
         }
     }
