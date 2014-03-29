@@ -50,12 +50,21 @@ namespace LosPollosHermanos.Web.Controllers
                                                     }).ToArray()
                       };
 
-            using (var proxy = new Proxy<IOrdersService>("OrdersService"))
-            {
-                proxy.Call(s => s.SendOrder(dto));
-            }
+            ServiceBusTopicHelper
+                 .Setup(SubscriptionInitializer.Initialize())
+                     .Publish<OrderRequest>(dto, (m) =>
+                     {
+                         m.Properties["IsOrdered"] = false;
+                         m.Properties["Procesing"] = false;
+                         m.Properties["IsDelivered"] = false;
+                     });
 
             return Json(true);
+        }
+
+        public ActionResult Order()
+        {
+            return View();
         }
     }
 }

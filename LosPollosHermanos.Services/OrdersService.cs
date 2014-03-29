@@ -27,6 +27,7 @@ namespace LosPollosHermanos.Services
             _dbContext.Orders.Add(order);
             _dbContext.SaveChanges();
 
+            request.OrderId = order.Id;
             Console.WriteLine("Order {0} just taken with {1} product(s)",
                         order.Id,
                         order.OderLines.Count);

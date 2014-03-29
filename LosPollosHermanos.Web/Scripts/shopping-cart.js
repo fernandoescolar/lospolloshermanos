@@ -46,7 +46,8 @@ var Cart = function () {
            .done(function (data) {
                if (data) {
                    alert('Ordered!');
-                   self.lines([new CartLine()]);
+                   document.location.href = '/Home/Order';
+                   //self.lines([new CartLine()]);
                }
            })
            .fail(function (data) {

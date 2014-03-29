@@ -1,12 +1,41 @@
 ﻿using System.Linq;
 using LosPollosHermanos.Data;
+using LosPollosHermanos.Infrastructure;
 using LosPollosHermanos.ServiceContracts;
+using LosPollosHermanos.Web.Hubs;
+using Microsoft.AspNet.SignalR;
 
 namespace LosPollosHermanos.Web.Infrastructure
 {
     public class ProductsService : IProductsService
     {
         private readonly StoreDataContext _dbContext = new StoreDataContext();
+
+        public ProductsService()
+        {
+            var helper = ServiceBusTopicHelper.Setup(SubscriptionInitializer.Initialize());
+            helper.Subscribe<OrderRequest>((order) =>
+                {
+                    GlobalHost.ConnectionManager.GetHubContext<OrderStatusHub>().Clients.All().statusUpdated("ordered");
+                }
+                   , "(IsOrdered = true) AND (Procesing = false) AND (IsDelivered = false)",
+                   "StatusOrderedOrders"
+               );
+            helper.Subscribe<OrderRequest>((order) =>
+            {
+                GlobalHost.ConnectionManager.GetHubContext<OrderStatusHub>().Clients.All().statusUpdated("processing");
+            }
+                   , "(IsOrdered = true) AND (Procesing = true) AND (IsDelivered = false)",
+                   "StatusProcesingOrders"
+               );
+            helper.Subscribe<OrderRequest>((order) =>
+            {
+                GlobalHost.ConnectionManager.GetHubContext<OrderStatusHub>().Clients.All().statusUpdated("delivered");
+            }
+                   , "(IsOrdered = true) AND (Procesing = true) AND (IsDelivered = true)",
+                   "StatusDeliveredOrders"
+               );
+        }
 
         public void UpdateProductStock(ProductAvailabilityRequest request)
         {

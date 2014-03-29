@@ -21,9 +21,16 @@ namespace LosPollosHermanos.Services
                                                {
                                                    var service = new OrdersService();
                                                    service.SendOrder(order);
+
+                                                   helper.Publish<OrderRequest>(order, (m) =>
+                                                   {
+                                                       m.Properties["IsOrdered"] = true;
+                                                       m.Properties["Procesing"] = false;
+                                                       m.Properties["IsDelivered"] = false;
+                                                   });
                                                }
                     , "(IsOrdered = false) AND (IsDelivered = false)",
-                    "Orders"
+                    "NewOrders"
                 );
 
                 helper.Subscribe<OrderRequest>((order) =>
@@ -35,8 +42,8 @@ namespace LosPollosHermanos.Services
                                                                             Status = OrderStatus.Delivered
                                                                         });
                                                 }
-                   , "(IsOrdered = true) AND (IsDelivered = true)",
-                   "Orders"
+                   , "IsDelivered = true",
+                   "DeliveredOrders"
                );
 
                 Console.WriteLine("Press intro to exit");

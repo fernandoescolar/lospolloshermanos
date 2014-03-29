@@ -46,13 +46,14 @@ namespace LosPollosHermanos.Franchise
             return null;
         }
 
-        public static void UpdateOrder(OrderRequest order, bool isOrdered, bool isDelivered)
+        public static void UpdateOrder(OrderRequest order, bool procesing, bool isDelivered)
         {
             if (currentInstance != null)
             {
                 currentInstance.helper.Publish<OrderRequest>(order, (m) =>
                 {
-                    m.Properties["IsOrdered"] = isOrdered;
+                    m.Properties["IsOrdered"] = true;
+                    m.Properties["Procesing"] = procesing;
                     m.Properties["IsDelivered"] = isDelivered;
                 });
             }
@@ -65,8 +66,8 @@ namespace LosPollosHermanos.Franchise
                     currentOrders.Add(order);
                     this.LoadLinks();
                 }
-                , "(IsOrdered = false) AND (IsDelivered = false)",
-                "Orders"
+                , "(IsOrdered = true) AND (Procesing = false) AND (IsDelivered = false)",
+                "OrderedOrders"
             );
         }
 

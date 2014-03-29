@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "title";
+}
+
+<h2>Order Status</h2>
+<div id="status"></div>
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.signalR-2.0.3.js"></script>
+<script type="text/javascript">
+        $(function () {
+            var con = $.hubConnection();
+            var hub = con.createHubProxy('orderStatus');
+            hub.on('statusUpdated', function (newStatus) {
+                $('#status').text(newStatus);
+                $('#status').animate({ fontSize: '24px' }, function () {
+                    $('#status').animate({ fontSize: '1em' });
+                });
+            });
+            con.start().done(function () {
+                hub.invoke('ListenForUpdates', '');
+                $('#status').text('Order submitted, waiting for status...');
+            });
+        });
+</script>
+}
