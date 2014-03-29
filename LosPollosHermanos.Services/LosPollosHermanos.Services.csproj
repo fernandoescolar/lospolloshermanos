@@ -54,9 +54,16 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.ServiceBus, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.ServiceBus.2.2.7.0\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.2.0\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -80,6 +87,10 @@
     <ProjectReference Include="..\LosPollosHermanos.Domain\LosPollosHermanos.Domain.csproj">
       <Project>{11f31b1e-9d5d-43c6-84e6-3af5c85e4a20}</Project>
       <Name>LosPollosHermanos.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LosPollosHermanos.Infrastructure\LosPollosHermanos.Infrastructure.csproj">
+      <Project>{169E239D-18A7-416F-BD48-A853C833D332}</Project>
+      <Name>LosPollosHermanos.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\LosPollosHermanos.ServiceContracts\LosPollosHermanos.ServiceContracts.csproj">
       <Project>{52C39B0B-8CDE-4B6E-B5E5-760D699DDA3F}</Project>
